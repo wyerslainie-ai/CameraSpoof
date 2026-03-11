@@ -8,5 +8,6 @@ TWEAK_NAME = CameraSpoofer
 CameraSpoofer_FILES = Tweak.xm
 CameraSpoofer_FRAMEWORKS = UIKit
 CameraSpoofer_CFLAGS = -fobjc-arc
+CameraSpoofer_BUNDLE_FILTER = com.apple.springboard
 
 include $(THEOS)/makefiles/tweak.mk
