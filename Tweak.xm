@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 
 %ctor {
     NSString *bid = [[NSBundle mainBundle] bundleIdentifier];
@@ -6,7 +7,6 @@
 
     if ([bid isEqualToString:@"com.apple.springboard"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            // Minimal red dot — proof of life
             UIWindow *w = [[UIWindow alloc] initWithFrame:CGRectMake(20, 120, 60, 60)];
             w.windowLevel = UIWindowLevelStatusBar + 100;
             w.backgroundColor = [UIColor redColor];
