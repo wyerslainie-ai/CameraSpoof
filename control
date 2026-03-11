@@ -1,0 +1,8 @@
+Package: com.yourname.cameraspoofer
+Name: CameraSpoofer
+Version: 0.0.1
+Architecture: iphoneos-arm64
+Description: Camera spoofer tweak
+Maintainer: Ryan
+Author: Ryan
+Section: Tweaks
