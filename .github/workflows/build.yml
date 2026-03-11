@@ -21,11 +21,10 @@ jobs:
       run: |
         export THEOS=$HOME/theos
         export PATH=$HOME/theos/bin:$PATH
+        make clean
         mkdir -p layout/Library/MobileSubstrate/DynamicLibraries
         echo '{ Filter = { Bundles = ( "com.apple.springboard" ); }; }' > layout/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
-        echo "Plist written:"
-        cat layout/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
-        make clean && make package FINALPACKAGE=1
+        make package FINALPACKAGE=1
 
     - name: Fix deb payload paths
       run: |
