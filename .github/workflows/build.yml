@@ -1,5 +1,51 @@
+name: Build CameraSpoofer .deb
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Theos (roothide fork)
+      run: |
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/roothide/theos/master/bin/install-theos)"
+
+    - name: Install ldid + dpkg
+      run: brew install ldid dpkg
+
     - name: Build deb
       run: |
         export THEOS=$HOME/theos
         export PATH=$HOME/theos/bin:$PATH
         make package FINALPACKAGE=1
+
+    - name: Fix deb payload paths
+      run: |
+        cd packages
+        rm -rf /tmp/debextract
+        dpkg-deb -R *.deb /tmp/debextract
+        mkdir -p /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries
+        mv /tmp/debextract/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.dylib \
+           /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries/
+        cp ../layout/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist \
+           /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
+        rm -rf /tmp/debextract/Library
+        echo "Final plist:"
+        cat /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
+        dpkg-deb -b /tmp/debextract *.deb
+
+    - name: Inspect deb contents
+      run: |
+        cd packages
+        rm -rf /tmp/debextract
+        dpkg-deb -R *.deb /tmp/debextract
+        find /tmp/debextract -type f
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: CameraSpoofer-deb
+        path: packages/*.deb
+        retention-days: 30
