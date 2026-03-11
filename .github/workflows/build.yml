@@ -21,7 +21,6 @@ jobs:
       run: |
         export THEOS=$HOME/theos
         export PATH=$HOME/theos/bin:$PATH
-        make clean
         mkdir -p layout/Library/MobileSubstrate/DynamicLibraries
         echo '{ Filter = { Bundles = ( "com.apple.springboard" ); }; }' > layout/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
         make package FINALPACKAGE=1
