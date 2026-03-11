@@ -6,3 +6,4 @@ Description: Camera spoofer tweak
 Maintainer: Ryan
 Author: Ryan
 Section: Tweaks
+Depends: mobilesubstrate
