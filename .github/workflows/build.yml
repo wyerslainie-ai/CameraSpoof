@@ -3,6 +3,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: macos-14
@@ -21,29 +22,14 @@ jobs:
       run: |
         export THEOS=$HOME/theos
         export PATH=$HOME/theos/bin:$PATH
-        make package FINALPACKAGE=1
-
-    - name: Fix deb payload paths
-      run: |
-        cd packages
-        rm -rf /tmp/debextract
-        dpkg-deb -R *.deb /tmp/debextract
-        mkdir -p /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries
-        mv /tmp/debextract/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.dylib \
-           /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries/
-        cp ../layout/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist \
-           /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
-        rm -rf /tmp/debextract/Library
-        echo "Final plist:"
-        cat /tmp/debextract/var/jb/Library/MobileSubstrate/DynamicLibraries/CameraSpoofer.plist
-        dpkg-deb -b /tmp/debextract *.deb
+        make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
     - name: Inspect deb contents
       run: |
-        cd packages
-        rm -rf /tmp/debextract
-        dpkg-deb -R *.deb /tmp/debextract
+        dpkg-deb -R packages/*.deb /tmp/debextract
         find /tmp/debextract -type f
+        echo "--- control ---"
+        cat /tmp/debextract/DEBIAN/control
 
     - uses: actions/upload-artifact@v4
       with:
